@@ -1,11 +1,22 @@
-const logger = {
-  info: (message) => {
-    console.log(`[INFO]: ${message}`);
-  },
+const winston = require("winston");
 
-  error: (message) => {
-    console.log(`[ERROR]: ${message}`);
-  },
-};
+const logger = winston.createLogger({
+  level: "info",
+
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ level, message, timestamp }) => {
+      return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+    }),
+  ),
+
+  transports: [
+    new winston.transports.File({
+      filename: "app.log",
+    }),
+
+    new winston.transports.Console(),
+  ],
+});
 
 module.exports = logger;
